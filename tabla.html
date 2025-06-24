@@ -39,6 +39,19 @@
         <canvas id="solarChart" height="100"></canvas>
     </div>
 
+    <!-- Estado Actual -->
+    <section class="container my-5">
+        <h3 class="text-center">Estado Actual</h3>
+        <div class="text-center">
+            <p>Voltaje: <span id="voltaje">--</span> V</p>
+            <div class="progress" style="height: 30px;">
+                <div id="barraVoltaje" class="progress-bar bg-success" role="progressbar" style="width: 0%;">
+                    0%
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <p>Derechos Reservados</p>
     </footer>
@@ -46,4 +59,3 @@
     <script src="scripts/grafica.js"></script>
 </body>
 </html>
-
