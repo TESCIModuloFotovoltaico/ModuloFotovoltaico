@@ -41,4 +41,22 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         })
         .catch(error => console.error("Error al cargar los datos:", error));
+
+    // --- Agrega aquí la función para actualizar el voltaje ---
+    function actualizarVoltaje() {
+        fetch('datos.json')
+            .then(res => res.json())
+            .then(data => {
+                const voltaje = parseFloat(data.voltaje).toFixed(2);
+                const porcentaje = Math.min((voltaje / 5) * 100, 100);
+                document.getElementById("voltaje").textContent = voltaje;
+                const barra = document.getElementById("barraVoltaje");
+                barra.style.width = porcentaje + "%";
+                barra.textContent = porcentaje.toFixed(0) + "%";
+            })
+            .catch(err => console.error("Error al cargar voltaje:", err));
+    }
+
+    setInterval(actualizarVoltaje, 10000);
+    actualizarVoltaje();
 });
