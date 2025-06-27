@@ -7,20 +7,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="stilos/styles.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+    </style>
 </head>
-<body transition-style="in:custom:circle-swoop"> <!-- Transición agregada aquí -->
-    <!-- Header -->
-    <header class="bg-success text-white py-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="m-0">Módulo Fotovoltaico</h1>
-            <img src="recursos/rino.png" alt="Logo" class="img-fluid" style="max-height: 50px;">
-        </div>
-    </header>
+<body transition-style="in:custom:circle-swoop">
 
-    <!-- Navegación -->
+<!-- Header-->
+<div class="position-relative">
+    <div class="bg-success text-white py-4 text-center">
+        <h1 class="m-0">Módulo Fotovoltaico</h1>
+    </div>
+
+    <div class="logo-sobrepuesto text-center">
+        <img src="recursos/logo.png" alt="Logo" class="logo-grande-sobrepuesto img-fluid" />
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container-fluid">
-            <a class="navbar-brand" href="https://tesci.edomex.gob.mx">TESCI</a>
+            <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
+                <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
+                TESCI
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,6 +42,7 @@
             </div>
         </div>
     </nav>
+</div>
 
     <!-- Gráfica -->
     <div class="container my-5">
