@@ -300,3 +300,15 @@ footer {
         font-size: 0.95rem;
     }
 }
+
+.logo-sobrepuesto {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    z-index: 5;
+}
+
+.logo-grande-sobrepuesto {
+    max-height: 150px;
+    filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.5));
+}
