@@ -1,21 +1,25 @@
-/* Fuente global y espaciado inferior para el footer */
-body {
+html, body {
+    height: 100%;
+    margin: 0;
     font-family: Helvetica, Arial, sans-serif;
-    padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Footer fijo en la parte inferior */
+.wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
     background-color: black;
     color: white;
     text-align: center;
     padding: 10px 0;
-    z-index: 1000;
+    width: 100%;
 }
+
 
 /* Video de fondo */
 .video-background {
@@ -39,7 +43,7 @@ footer {
     text-align: center;
     padding: 20px;
     border-radius: 12px;
-    /* Fondo eliminado para mostrar solo texto */
+
 }
 
 /* Videos medianos */
@@ -311,4 +315,11 @@ footer {
 .logo-grande-sobrepuesto {
     max-height: 150px;
     filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.5));
+}
+
+
+.modal,
+.modal-backdrop {
+    clip-path: none !important;
+    animation: none !important;
 }
