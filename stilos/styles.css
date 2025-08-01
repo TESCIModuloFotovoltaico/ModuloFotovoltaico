@@ -333,3 +333,20 @@ img, video, canvas {
     height: auto;
     display: block;
 }
+
+/* ========================= */
+/*  Ajustes responsivos para el logo */
+@media (max-width: 768px) {
+    .logo-sobrepuesto {
+        top: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+
+    .logo-grande-sobrepuesto {
+        max-height: 80px;
+        margin: 0 auto;
+    }
+}
+
