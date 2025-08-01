@@ -335,18 +335,19 @@ img, video, canvas {
 }
 
 /* ========================= */
-/*  Ajustes responsivos para el logo */
+/* 🔧 Ajustes responsivos para el logo (versión móvil derecha) */
 @media (max-width: 768px) {
     .logo-sobrepuesto {
         top: 10px;
-        left: 0;
-        right: 0;
-        text-align: center;
+        right: 10px;
+        left: auto;
+        text-align: right;
     }
 
     .logo-grande-sobrepuesto {
         max-height: 80px;
-        margin: 0 auto;
+        width: auto;
+        margin-right: 0;
     }
 }
 
