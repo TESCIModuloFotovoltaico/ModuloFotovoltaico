@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas del Panel Solar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="stilos/styles.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Helvetica, Arial, sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo Fotovoltaico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="stilos/styles.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body transition-style="in:custom:circle-swoop">
+<body>
 
-<!-- Header-->
-<div class="position-relative">
-    <div class="bg-success text-white py-4 text-center">
+    <!-- Contenido de la página -->
+    <main class="container my-5">
+      <h2 class="text-center">Contenido Aquí</h2>
+      <p class="text-center">Agrega más secciones, acordeones, gráficas o imágenes según tu proyecto.</p>
+    </main>
+
+    <!-- Header -->
+    <div class="position-relative">
+      <div class="bg-success text-white py-4 text-center">
         <h1 class="m-0">Módulo Fotovoltaico</h1>
-    </div>
+      </div>
 
-    <div class="logo-sobrepuesto text-center">
+      <div class="logo-sobrepuesto text-center">
         <img src="recursos/logo.png" alt="Logo" class="logo-grande-sobrepuesto img-fluid" />
-    </div>
+      </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+      <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
-                <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
-                TESCI
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="tabla.html">Estadísticas</a></li>
-                </ul>
-            </div>
+          <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
+            <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
+            TESCI
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
+              <li class="nav-item"><a class="nav-link" href="tabla.html">Estadísticas</a></li>
+            </ul>
+          </div>
         </div>
-    </nav>
-</div>
+      </nav>
+    </div>
 
     <!-- Gráfica -->
     <div class="container my-5">
@@ -63,10 +64,13 @@
         </div>
     </section>
 
-    <footer>
-        <p>Derechos Reservados</p>
-    </footer>
 
-    <script src="scripts/grafica.js"></script>
+  </div> <!-- Fin de wrapper -->
+
+  <!-- Footer fuera del wrapper -->
+  <footer>
+    <p>Derechos Reservados</p>
+  </footer>
+
 </body>
 </html>
