@@ -5,7 +5,7 @@ if ($conexion->connect_error) {
     die("Conexión fallida: " . $conexion->connect_error);
 }
 
-$sql = "SELECT fecha, valor FROM datos_panel ORDER BY fecha ASC";
+$sql = "SELECT fecha, voltaje FROM voltaje_panel ORDER BY fecha ASC";
 $resultado = $conexion->query($sql);
 
 $datos = [];
@@ -15,4 +15,8 @@ while ($fila = $resultado->fetch_assoc()) {
 }
 
 echo json_encode($datos);
+
+$conexion->query("INSERT INTO voltaje_panel (fecha, voltaje) VALUES ('2025-08-18 15:30:00', 12.00)");
+
+$conexion->close();
 ?>
