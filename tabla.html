@@ -11,21 +11,11 @@
 <body>
 
   <!-- Contenedor principal -->
-  <div class="wrapper" transition-style="in:custom:circle-swoop">
+  <div class="wrapper">
 
     <!-- Header -->
-    <div class="position-relative">
-      <div class="bg-success text-white py-4 text-center">
-        <h1 class="m-0">Módulo Fotovoltaico</h1>
-      </div>
-
-      <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-        <div class="container-fluid">
-          <a class="navbar-brand d-flex align-items-center" href="#">
-            TESCI
-          </a>
-        </div>
-      </nav>
+    <div class="bg-success text-white py-4 text-center">
+      <h1 class="m-0">Módulo Fotovoltaico</h1>
     </div>
 
     <!-- Botón para consultar -->
@@ -38,9 +28,10 @@
       <table id="tablaDatos" class="table table-bordered table-striped">
         <thead class="table-dark">
           <tr>
+            <th>ID</th>
             <th>Fecha</th>
-            <th>Hora</th>
-            <th>Voltaje</th>
+            <th>Voltaje (V)</th>
+            <th>Corriente (A)</th>
           </tr>
         </thead>
         <tbody>
@@ -72,7 +63,7 @@
     async function consultarTabla() {
       const { data, error } = await supabase
         .from("panel_solar")
-        .select("fecha, hora, voltaje")
+        .select("id, fecha, voltaje, corriente")
         .order("id", { ascending: false })
         .limit(10);
 
@@ -85,13 +76,14 @@
       // Limpiar tabla
       tablaBody.innerHTML = "";
 
-      // Insertar datos
+      // Insertar datos en tabla
       data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
+          <td>${row.id}</td>
           <td>${row.fecha}</td>
-          <td>${row.hora}</td>
           <td>${row.voltaje}</td>
+          <td>${row.corriente}</td>
         `;
         tablaBody.appendChild(tr);
       });
