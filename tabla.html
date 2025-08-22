@@ -19,55 +19,87 @@
         <h1 class="m-0">Módulo Fotovoltaico</h1>
       </div>
 
-      <div class="logo-sobrepuesto text-center">
-        <img src="recursos/logo.png" alt="Logo" class="logo-grande-sobrepuesto img-fluid" />
-      </div>
-
       <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container-fluid">
-          <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
-            <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
+          <a class="navbar-brand d-flex align-items-center" href="#">
             TESCI
           </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
-              <li class="nav-item"><a class="nav-link" href="tabla.html">Estadísticas</a></li>
-            </ul>
-          </div>
         </div>
       </nav>
     </div>
 
-    <!-- Gráfica -->
-    <div class="container my-5">
-      <h2 class="text-center mb-4">Generación de Energía</h2>
-      <canvas id="solarChart" height="100"></canvas>
+    <!-- Botón para consultar -->
+    <div class="container my-5 text-center">
+      <button id="btnConsultar" class="btn btn-primary">Consultar tabla panel_solar</button>
     </div>
 
-    <!-- Estado Actual -->
-    <section class="container my-5">
-      <h3 class="text-center">Estado Actual</h3>
-      <div class="text-center">
-        <p>Voltaje: <span id="voltaje">--</span> V</p>
-        <div class="progress" style="height: 30px;">
-          <div id="barraVoltaje" class="progress-bar bg-success" role="progressbar" style="width: 0%;">
-            0%
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Tabla para mostrar resultados -->
+    <div class="container">
+      <table id="tablaDatos" class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Voltaje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Aquí se insertan los datos -->
+        </tbody>
+      </table>
+    </div>
 
-  </div> <!-- Fin de wrapper -->
+  </div> <!-- Fin wrapper -->
 
-  <!-- Footer fuera del wrapper -->
-  <footer>
+  <!-- Footer -->
+  <footer class="text-center py-3">
     <p>Derechos Reservados</p>
   </footer>
 
-  <script src="scripts/grafica.js"></script>
+  <!-- Conexión a Supabase -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // 🔑 Configura tus credenciales de Supabase
+    const supabaseUrl = "https://TU_PROYECTO.supabase.co";   // <-- cámbialo
+    const supabaseKey = "TU_API_KEY_ANON";                   // <-- cámbialo
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const btn = document.getElementById("btnConsultar");
+    const tablaBody = document.querySelector("#tablaDatos tbody");
+
+    // Función para consultar tabla
+    async function consultarTabla() {
+      const { data, error } = await supabase
+        .from("panel_solar")
+        .select("fecha, hora, voltaje")
+        .order("id", { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error("❌ Error:", error);
+        alert("Error al consultar Supabase. Revisa la consola.");
+        return;
+      }
+
+      // Limpiar tabla
+      tablaBody.innerHTML = "";
+
+      // Insertar datos
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.fecha}</td>
+          <td>${row.hora}</td>
+          <td>${row.voltaje}</td>
+        `;
+        tablaBody.appendChild(tr);
+      });
+    }
+
+    // Evento click en el botón
+    btn.addEventListener("click", consultarTabla);
+  </script>
+
 </body>
 </html>
