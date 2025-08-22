@@ -42,32 +42,37 @@
       </nav>
     </div>
 
-    <!-- Gráfica -->
-    <div class="container my-5">
-      <h2 class="text-center mb-4">Generación de Energía</h2>
-      <canvas id="solarChart" height="100"></canvas>
-    </div>
+   <h1>Mi Webcam</h1>
+  <video id="video" width="640" height="480" autoplay></video>
+  <button id="capture">Tomar foto</button>
 
-    <!-- Estado Actual -->
-    <section class="container my-5">
-      <h3 class="text-center">Estado Actual</h3>
-      <div class="text-center">
-        <p>Voltaje: <span id="voltaje">--</span> V</p>
-        <div class="progress" style="height: 30px;">
-          <div id="barraVoltaje" class="progress-bar bg-success" role="progressbar" style="width: 0%;">
-            0%
-          </div>
-        </div>
-      </div>
-    </section>
+  <script>
+    const video = document.getElementById('video');
+    const captureBtn = document.getElementById('capture');
 
-  </div> <!-- Fin de wrapper -->
+    // Solicitar acceso a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => { console.error("Error al acceder a la cámara:", err); });
 
-  <!-- Footer fuera del wrapper -->
-  <footer>
-    <p>Derechos Reservados</p>
-  </footer>
+    captureBtn.addEventListener('click', () => {
+      // Crear canvas temporal
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  <script src="scripts/grafica.js"></script>
-</body>
-</html>
+      // Convertir a imagen y forzar descarga automática
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = foto_${Date.now()}.png;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }, 'image/png');
+    });
+  </script>
+
+
