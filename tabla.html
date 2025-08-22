@@ -85,7 +85,7 @@
     // Función para consultar tabla
     async function consultarTabla() {
       const { data, error } = await supabase
-        .from("panel_solar")
+        .from("Baterias")
         .select("id, fecha, voltaje, corriente")
         .order("id", { ascending: false })
         .limit(10);
@@ -118,6 +118,7 @@
 
 </body>
 </html>
+
 
 
 
