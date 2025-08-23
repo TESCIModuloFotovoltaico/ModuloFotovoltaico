@@ -84,10 +84,11 @@
   async function consultarTabla() {
     try {
       const { data, error } = await supabase
-        .from("Baterias")
-        .select("id, fecha, voltaje, corriente")
-        .order("id", { ascending: false })
-        .limit(10);
+      .from("Baterias")
+      .select('id, "Fecha", "Voltaje (V)", "Corriente (A)"')
+      .order("id", { ascending: false })
+      .limit(10);
+
 
       if (error) {
         console.error("❌ Error de Supabase:", error);
@@ -104,10 +105,10 @@
       data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${row.id}</td>
-          <td>${row.fecha}</td>
-          <td>${row.voltaje}</td>
-          <td>${row.corriente}</td>
+        <td>${row.id}</td>
+        <td>${row.Fecha}</td>
+        <td>${row["Voltaje (V)"]}</td>
+        <td>${row["Corriente (A)"]}</td>
         `;
         tablaBody.appendChild(tr);
       });
@@ -128,6 +129,7 @@
 
 </body>
 </html>
+
 
 
 
