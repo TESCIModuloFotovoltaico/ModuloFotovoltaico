@@ -63,9 +63,10 @@
   </table>
 </div>
 
+  </div> <!-- Fin de wrapper -->
 
-      <!-- Footer -->
-  <footer class="text-center py-3">
+  <!-- Footer fuera del wrapper -->
+  <footer>
     <p>Derechos Reservados</p>
   </footer>
 
@@ -94,10 +95,10 @@
       data.forEach((row) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${row.ID}</td>
-          <td>${row.fecha}</td>
-          <td>${row.voltaje}</td>
-          <td>${row.corriente}</td>
+        <td>${row.id}</td>
+        <td>${row.Fecha}</td>
+        <td>${row["Voltaje (V)"]}</td>
+        <td>${row["Corriente (A)"]}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -112,6 +113,7 @@
 
 </body>
 </html>
+
 
 
 
