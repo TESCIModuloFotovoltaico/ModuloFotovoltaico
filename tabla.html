@@ -71,7 +71,7 @@
   </footer>
 
   <!-- Conexión a Supabase -->
-  <script type="module">
+<script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
   const supabaseUrl = "https://cmnkmgdybqcpipgsposc.supabase.co";
@@ -82,37 +82,53 @@
   const tablaBody = document.querySelector("#tablaDatos tbody");
 
   async function consultarTabla() {
-    const { data, error } = await supabase
-      .from("Baterias")
-      .select("id, fecha, voltaje, corriente")
-      .order("id", { ascending: false })
-      .limit(10);
+    try {
+      const { data, error } = await supabase
+        .from("Baterias")
+        .select("id, fecha, voltaje, corriente")
+        .order("id", { ascending: false })
+        .limit(10);
 
-    if (error) {
-      console.error("❌ Error:", error);
-      alert("Error al consultar Supabase. Revisa la consola.");
-      return;
-    }
+      if (error) {
+        console.error("❌ Error de Supabase:", error);
+        tablaBody.innerHTML = `
+          <tr><td colspan="4" class="text-danger">Error al consultar la base de datos</td></tr>
+        `;
+        return;
+      }
 
-    tablaBody.innerHTML = "";
+      // Limpiar tabla
+      tablaBody.innerHTML = "";
 
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${row.fecha}</td>
-        <td>${row.voltaje}</td>
-        <td>${row.corriente}</td>
+      // Insertar datos
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.fecha}</td>
+          <td>${row.voltaje}</td>
+          <td>${row.corriente}</td>
+        `;
+        tablaBody.appendChild(tr);
+      });
+
+      console.log("✅ Datos recibidos:", data);
+
+    } catch (err) {
+      console.error("⚠️ Error inesperado:", err);
+      tablaBody.innerHTML = `
+        <tr><td colspan="4" class="text-danger">Error inesperado: revisa consola</td></tr>
       `;
-      tablaBody.appendChild(tr);
-    });
+    }
   }
 
   btn.addEventListener("click", consultarTabla);
 </script>
 
+
 </body>
 </html>
+
 
 
 
