@@ -43,7 +43,7 @@
 
     <!-- Botón para consultar -->
     <div class="container my-5 text-center">
-      <button id="btnConsultar" class="btn btn-primary">Consultar tabla panel_solar</button>
+      <button id="btnConsultar" class="btn btn-primary">Consultar tabla Baterias</button>
     </div>
 
     <!-- Tabla para mostrar resultados -->
@@ -72,52 +72,48 @@
 
   <!-- Conexión a Supabase -->
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // 🔑 Configura tus credenciales de Supabase
-    const supabaseUrl = "https://mpmmbzuhafbxduilbegj.supabase.co";   // <-- cámbialo
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbW1ienVoYWZieGR1aWxiZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDkwOTUsImV4cCI6MjA3MTQyNTA5NX0.HeVe8qvrnmUbCH8nfjd4gruXO1aU2MNWTrEXmG6lOYk";                   // <-- cámbialo
-    const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabaseUrl = "https://cmnkmgdybqcpipgsposc.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbmttZ2R5YnFjcGlwZ3Nwb3NjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4Nzg1MjcsImV4cCI6MjA3MTQ1NDUyN30.n-bJ4vtGg_9IA1jSFDWPRQq4fLLdhmok53_C2DRxJiA"; 
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const btn = document.getElementById("btnConsultar");
-    const tablaBody = document.querySelector("#tablaDatos tbody");
+  const btn = document.getElementById("btnConsultar");
+  const tablaBody = document.querySelector("#tablaDatos tbody");
 
-    // Función para consultar tabla
-    async function consultarTabla() {
-      const { data, error } = await supabase
-        .from("Baterias")
-        .select("id, fecha, voltaje, corriente")
-        .order("id", { ascending: false })
-        .limit(10);
+  async function consultarTabla() {
+    const { data, error } = await supabase
+      .from("Baterias")
+      .select("id, fecha, voltaje, corriente")
+      .order("id", { ascending: false })
+      .limit(10);
 
-      if (error) {
-        console.error("❌ Error:", error);
-        alert("Error al consultar Supabase. Revisa la consola.");
-        return;
-      }
-
-      // Limpiar tabla
-      tablaBody.innerHTML = "";
-
-      // Insertar datos en tabla
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.id}</td>
-          <td>${row.fecha}</td>
-          <td>${row.voltaje}</td>
-          <td>${row.corriente}</td>
-        `;
-        tablaBody.appendChild(tr);
-      });
+    if (error) {
+      console.error("❌ Error:", error);
+      alert("Error al consultar Supabase. Revisa la consola.");
+      return;
     }
 
-    // Evento click en el botón
-    btn.addEventListener("click", consultarTabla);
-  </script>
+    tablaBody.innerHTML = "";
+
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.id}</td>
+        <td>${row.fecha}</td>
+        <td>${row.voltaje}</td>
+        <td>${row.corriente}</td>
+      `;
+      tablaBody.appendChild(tr);
+    });
+  }
+
+  btn.addEventListener("click", consultarTabla);
+</script>
 
 </body>
 </html>
+
 
 
 
