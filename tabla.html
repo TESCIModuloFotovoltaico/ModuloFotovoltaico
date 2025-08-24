@@ -1,117 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Módulo Fotovoltaico</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="stilos/styles.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Módulo Fotovoltaico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="stilos/styles.css" rel="stylesheet" />
+    <!-- CSS de Flatpickr para el calendario -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
-  <!-- Contenedor principal con animación -->
-  <div class="wrapper" transition-style="in:custom:circle-swoop">
+    <div class="wrapper" transition-style="in:custom:circle-swoop">
 
-    <!-- Header -->
-    <div class="position-relative">
-      <div class="bg-success text-white py-4 text-center">
-        <h1 class="m-0">Módulo Fotovoltaico</h1>
-      </div>
+        <div class="position-relative">
+            <div class="bg-success text-white py-4 text-center">
+                <h1 class="m-0">Módulo Fotovoltaico</h1>
+            </div>
 
-      <div class="logo-sobrepuesto text-center">
-        <img src="recursos/logo.png" alt="Logo" class="logo-grande-sobrepuesto img-fluid" />
-      </div>
+            <div class="logo-sobrepuesto text-center">
+                <img src="recursos/logo.png" alt="Logo" class="logo-grande-sobrepuesto img-fluid" />
+            </div>
 
-      <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-        <div class="container-fluid">
-          <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
-            <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
-            TESCI
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
-              <li class="nav-item"><a class="nav-link" href="tabla.html">Estadísticas</a></li>
-            </ul>
-          </div>
+            <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+                <div class="container-fluid">
+                    <a class="navbar-brand d-flex align-items-center" href="https://tesci.edomex.gob.mx">
+                        <img src="recursos/rino.png" alt="" style="height: 40px;" class="me-2" />
+                        TESCI
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link active" href="tabla.html">Estadísticas</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </div>
-      </nav>
-    </div>
 
-<!-- Botón para consultar -->
-<div class="container my-5 text-center">
-  <button id="btnConsultar" class="btn btn-primary">Consultar tabla Baterias</button>
-</div>
+        <div class="container my-5">
+            <h2 class="text-center mb-4">Gráfica de Baterías</h2>
+            
+            <!-- Campo de entrada para el calendario -->
+            <div class="d-flex justify-content-center mb-4">
+                <input type="text" id="datePicker" class="form-control" style="max-width: 250px;" placeholder="Selecciona una fecha" />
+            </div>
 
-<!-- Tabla para mostrar resultados -->
-<div class="container">
-  <table id="tablaDatos" class="table table-bordered table-striped">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Fecha</th>
-        <th>Voltaje (V)</th>
-        <th>Corriente (A)</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-body">
-      <!-- Aquí se insertan los datos -->
-    </tbody>
-  </table>
-</div>
+            <canvas id="miGrafica"></canvas>
+        </div>
 
-  </div> <!-- Fin de wrapper -->
-
-  <!-- Footer fuera del wrapper -->
-  <footer>
-    <p>Derechos Reservados</p>
-  </footer>
-
+    </div> 
+    <footer class="text-center py-3">
+        <p>Derechos Reservados</p>
+    </footer>
     
-<!-- Script -->
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    <!-- Carga de librerías JavaScript necesarias -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <!-- Librerías para manejar fechas y el adaptador de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+    <!-- JS de Flatpickr para el calendario -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define tus credenciales de Supabase.
+            const supabaseUrl = "https://cmnkmgdybqcpipgsposc.supabase.co";
+            // Clave API actualizada con la que proporcionaste.
+            const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbmttZ2R5YnFjcGlwZ3Nwb3NjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4Nzg1MjcsImV4cCI6MjA3MTQ1NDUyN30.n-bJ4vtGg_9IA1jSFDWPRQq4fLLdhmok53_C2DRxJiA";
+            
+            // Crea el cliente de Supabase para interactuar con la base de datos.
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  const supabaseUrl = "https://cmnkmgdybqcpipgsposc.supabase.co"; 
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbmttZ2R5YnFjcGlwZ3Nwb3NjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4Nzg1MjcsImV4cCI6MjA3MTQ1NDUyN30.n-bJ4vtGg_9IA1jSFDWPRQq4fLLdhmok53_C2DRxJiA"; 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+            let chartInstance = null; // Variable para almacenar la instancia de la gráfica Chart.js.
+            let currentSelectedDate = moment().format('YYYY-MM-DD'); // Fecha seleccionada actualmente (por defecto, hoy).
 
-  document.getElementById("btnConsultar").addEventListener("click", async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Baterias")
-        .select("*");
+            // Inicializa Flatpickr para el campo de entrada del calendario.
+            flatpickr("#datePicker", {
+                dateFormat: "Y-m-d", // Formato de la fecha que se muestra y se usa.
+                defaultDate: currentSelectedDate, // Establece la fecha por defecto al cargar la página.
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Se ejecuta cada vez que el usuario selecciona una nueva fecha.
+                    if (selectedDates.length > 0) {
+                        currentSelectedDate = moment(selectedDates[0]).format('YYYY-MM-DD');
+                        console.log("Fecha seleccionada en calendario:", currentSelectedDate);
+                        updateChart(); // Actualiza la gráfica con los datos de la nueva fecha.
+                    }
+                }
+            });
 
-      if (error) throw error;
+            /**
+             * Función asíncrona para obtener datos de Supabase y actualizar/crear la gráfica.
+             * Siempre filtra los datos por la fecha almacenada en `currentSelectedDate`.
+             */
+            async function updateChart() {
+                try {
+                    // Calcula el inicio y fin del día seleccionado para el filtro de Supabase.
+                    const startOfDay = moment(currentSelectedDate).startOf('day').toISOString();
+                    const endOfDay = moment(currentSelectedDate).endOf('day').toISOString();
 
-      console.log("Datos recibidos:", data);
+                    console.log(`Consultando datos para el día: ${currentSelectedDate} (desde ${startOfDay} hasta ${endOfDay})`);
 
-      const tbody = document.getElementById("tabla-body");
-      tbody.innerHTML = ""; // limpiar antes de volver a escribir
+                    // Realiza la consulta a la tabla "Baterias" de Supabase.
+                    // Selecciona Fecha, Voltaje (V) y Corriente (A).
+                    // Ordena los resultados por Fecha de forma ascendente.
+                    // Filtra los datos para que estén dentro del rango del día seleccionado.
+                    const { data, error } = await supabaseClient
+                        .from("Baterias")
+                        .select('Fecha, "Voltaje (V)", "Corriente (A)"')
+                        .order('Fecha', { ascending: true })
+                        .gte('Fecha', startOfDay) // Mayor o igual que el inicio del día.
+                        .lt('Fecha', endOfDay); // Menor que el final del día (exclusivo).
 
-      data.forEach((row) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${row.Fecha}</td>
-        <td>${row["Voltaje (V)"]}</td>
-        <td>${row["Corriente (A)"]}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    } catch (err) {
-      console.error("Error en la consulta:", err.message);
-    }
-  });
-</script>
+                    if (error) {
+                        // Si hay un error en la consulta de Supabase, lo registra y lanza una excepción.
+                        console.error("Error al obtener datos de Supabase (SQL):", error);
+                        throw new Error(`Error de Supabase: ${error.message || "Error desconocido"}`);
+                    }
 
+                    if (!data || data.length === 0) {
+                        // Si no hay datos para la fecha seleccionada, muestra una advertencia y destruye la gráfica si existe.
+                        console.warn(`No hay datos para el día ${currentSelectedDate} en la tabla 'Baterias'. La gráfica estará vacía.`);
+                        if (chartInstance) {
+                            chartInstance.destroy();
+                            chartInstance = null;
+                        }
+                        return; // Sale de la función si no hay datos.
+                    }
 
+                    console.log("Datos recibidos de Supabase (raw):", data);
 
+                    // Prepara los puntos de datos para Chart.js.
+                    // Cada punto es un objeto {x: fecha_parseada, y: voltaje_numerico}.
+                    const chartDataPoints = data.map(row => ({
+                        x: moment(row.Fecha), // Parsea la fecha de Supabase con Moment.js.
+                        y: row["Voltaje (V)"] // Obtiene el valor de voltaje.
+                    }));
 
+                    // Filtra los puntos de datos para asegurar que 'y' (voltaje) no sea nulo o indefinido.
+                    const validChartDataPoints = chartDataPoints.filter(point => point.y !== null && point.y !== undefined);
+
+                    console.log("Puntos de datos para Chart.js (parseados y válidos):", validChartDataPoints);
+
+                    if (chartInstance) {
+                        // Si la gráfica ya existe, simplemente actualiza sus datos y la refresca.
+                        chartInstance.data.datasets[0].data = validChartDataPoints;
+                        chartInstance.update();
+                    } else {
+                        // Si la gráfica no existe, crea una nueva instancia de Chart.js.
+                        const ctx = document.getElementById('miGrafica').getContext('2d');
+                        chartInstance = new Chart(ctx, {
+                            type: 'line', // Tipo de gráfica de línea para el efecto "pico".
+                            data: {
+                                datasets: [{
+                                    label: 'Voltaje (V)', // Etiqueta del dataset.
+                                    data: validChartDataPoints, // Los datos válidos para la gráfica.
+                                    borderColor: 'rgb(255, 99, 132)', // Color de la línea.
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo (si fill es true).
+                                    borderWidth: 2,      // Ancho de la línea.
+                                    tension: 0.4,        // Suavidad de la línea.
+                                    fill: false,         // No rellena el área bajo la línea.
+                                    pointRadius: 6,      // Tamaño de los marcadores de los puntos.
+                                    pointBackgroundColor: 'rgb(255, 99, 132)', // Color de fondo de los marcadores.
+                                    pointBorderColor: '#fff', // Color del borde de los marcadores.
+                                    pointHoverRadius: 8, // Tamaño del marcador al pasar el ratón.
+                                }]
+                            },
+                            options: {
+                                responsive: true, // La gráfica se adapta al tamaño de su contenedor.
+                                maintainAspectRatio: false, // No mantiene la relación de aspecto predeterminada.
+                                scales: {
+                                    x: { // Configuración del eje X como escala de tiempo.
+                                        type: 'time',
+                                        time: {
+                                            unit: 'hour', // La unidad principal para mostrar en el eje es la hora.
+                                            tooltipFormat: 'DD/MM/YYYY HH:mm', // Formato de fecha/hora en el tooltip.
+                                            displayFormats: {
+                                                hour: 'HH:mm', // Formato para las etiquetas de hora en el eje.
+                                                day: 'DD/MM/YYYY' // Formato para las etiquetas de día (si la unidad cambia).
+                                            }
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Fecha y Hora' // Título del eje X.
+                                        },
+                                        ticks: {
+                                            autoSkip: true, // Omite etiquetas automáticamente si hay muchas.
+                                            maxRotation: 0, // No rota las etiquetas.
+                                            minRotation: 0
+                                        }
+                                    },
+                                    y: { // Configuración del eje Y.
+                                        beginAtZero: true, // El eje Y comienza en cero.
+                                        title: {
+                                            display: true,
+                                            text: 'Voltaje (V)' // Título del eje Y.
+                                        }
+                                    }
+                                },
+                                animation: {
+                                    duration: 0 // Deshabilita las animaciones para actualizaciones instantáneas.
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: true // Muestra la leyenda de la gráfica.
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.error("Error al obtener datos o dibujar la gráfica:", err.message);
+                }
+            }
+
+            // 1. Carga la gráfica inicial cuando el DOM esté listo (mostrará datos del día actual).
+            updateChart();
+
+            // 2. Suscríbete a los cambios en tiempo real de la tabla 'Baterias' en Supabase.
+            // Si se inserta un nuevo dato para la fecha actualmente seleccionada, la gráfica se actualizará.
+            supabaseClient
+                .channel('schema-db-changes')
+                .on(
+                    'postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'Baterias' },
+                    (payload) => {
+                        console.log('Cambio en la base de datos detectado por Realtime:', payload);
+                        // Llama a updateChart, que filtrará y actualizará la gráfica si el nuevo dato es para el día actual.
+                        updateChart(); 
+                    }
+                )
+                .subscribe(); // Activa la suscripción al canal de Realtime.
+        });
+    </script>
 </body>
 </html>
-
-
