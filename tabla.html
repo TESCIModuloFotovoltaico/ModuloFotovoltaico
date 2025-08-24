@@ -43,9 +43,10 @@
         <div class="container my-5">
             <h2 class="text-center mb-4">Gráfica de Baterías</h2>
             
-            <!-- Campo de entrada para el calendario -->
-            <div class="d-flex justify-content-center mb-4">
+            <!-- Campo de entrada para el calendario y botón de exportar -->
+            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mb-4 gap-3">
                 <input type="text" id="datePicker" class="form-control" style="max-width: 250px;" placeholder="Selecciona una fecha" />
+                <button id="exportCsvBtn" class="btn btn-primary">Exportar Datos</button>
             </div>
 
             <canvas id="miGrafica"></canvas>
@@ -78,6 +79,7 @@
 
             let chartInstance = null; // Variable para almacenar la instancia de la gráfica Chart.js.
             let currentSelectedDate = moment().format('YYYY-MM-DD'); // Fecha seleccionada actualmente (por defecto, hoy).
+            let currentChartData = { voltage: [], current: [] }; // Almacena los datos actuales de la gráfica para exportar.
 
             // Inicializa Flatpickr para el campo de entrada del calendario.
             flatpickr("#datePicker", {
@@ -129,6 +131,7 @@
                             chartInstance.destroy();
                             chartInstance = null;
                         }
+                        currentChartData = { voltage: [], current: [] }; // Vacía los datos para exportar.
                         return; // Sale de la función si no hay datos.
                     }
 
@@ -152,6 +155,12 @@
 
                     console.log("Puntos de datos de Voltaje (parseados y válidos):", validChartDataPointsVoltage);
                     console.log("Puntos de datos de Corriente (parseados y válidos):", validChartDataPointsCurrent);
+
+                    // Almacena los datos válidos para su posterior exportación.
+                    currentChartData = {
+                        voltage: validChartDataPointsVoltage,
+                        current: validChartDataPointsCurrent
+                    };
 
                     // Define los datasets para la gráfica.
                     const datasets = [
@@ -241,6 +250,64 @@
                     console.error("Error al obtener datos o dibujar la gráfica:", err.message);
                 }
             }
+
+            // Función para exportar los datos actuales de la gráfica a un archivo CSV.
+            document.getElementById('exportCsvBtn').addEventListener('click', function() {
+                if (!currentChartData.voltage.length && !currentChartData.current.length) {
+                    alert('No hay datos para exportar. Selecciona una fecha con datos.');
+                    return;
+                }
+
+                let csvContent = "Fecha,Voltaje (V),Corriente (A)\n"; // Encabezados del CSV.
+
+                // Combinar y ordenar los datos por fecha para el CSV.
+                const allDataPoints = [];
+                currentChartData.voltage.forEach(p => allDataPoints.push({ date: p.x, voltage: p.y, type: 'voltage' }));
+                currentChartData.current.forEach(p => allDataPoints.push({ date: p.x, current: p.y, type: 'current' }));
+
+                // Agrupar los datos por fecha y hora exactas
+                const groupedData = {};
+                allDataPoints.forEach(point => {
+                    const dateTimeKey = point.date.format('YYYY-MM-DD HH:mm:ss');
+                    if (!groupedData[dateTimeKey]) {
+                        groupedData[dateTimeKey] = { date: point.date, voltage: null, current: null };
+                    }
+                    if (point.type === 'voltage') {
+                        groupedData[dateTimeKey].voltage = point.voltage;
+                    } else if (point.type === 'current') {
+                        groupedData[dateTimeKey].current = point.current;
+                    }
+                });
+
+                // Convertir el objeto agrupado a un array y ordenar por fecha
+                const sortedCombinedData = Object.values(groupedData).sort((a, b) => a.date.diff(b.date));
+
+                sortedCombinedData.forEach(row => {
+                    const formattedDate = row.date.format('YYYY-MM-DD HH:mm:ss');
+                    // Asegurarse de que los valores nulos se exporten como cadenas vacías o un valor predeterminado.
+                    const voltageValue = row.voltage !== null ? row.voltage : '';
+                    const currentValue = row.current !== null ? row.current : '';
+                    csvContent += `${formattedDate},${voltageValue},${currentValue}\n`;
+                });
+
+                // Crear un Blob con el contenido CSV.
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                if (link.download !== undefined) { // Feature detection para navegadores que soportan el atributo 'download'.
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `datos_baterias_${currentSelectedDate}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    // Fallback para navegadores antiguos.
+                    alert('Tu navegador no soporta la descarga automática. Copia el contenido CSV de la consola.');
+                    console.log(csvContent);
+                }
+            });
+
 
             // 1. Carga la gráfica inicial cuando el DOM esté listo (mostrará datos del día actual).
             updateChart();
