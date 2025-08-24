@@ -134,80 +134,104 @@
 
                     console.log("Datos recibidos de Supabase (raw):", data);
 
-                    // Prepara los puntos de datos para Chart.js.
-                    // Cada punto es un objeto {x: fecha_parseada, y: voltaje_numerico}.
-                    const chartDataPoints = data.map(row => ({
+                    // Prepara los puntos de datos para Chart.js para Voltaje.
+                    const chartDataPointsVoltage = data.map(row => ({
                         x: moment(row.Fecha), // Parsea la fecha de Supabase con Moment.js.
                         y: row["Voltaje (V)"] // Obtiene el valor de voltaje.
                     }));
 
-                    // Filtra los puntos de datos para asegurar que 'y' (voltaje) no sea nulo o indefinido.
-                    const validChartDataPoints = chartDataPoints.filter(point => point.y !== null && point.y !== undefined);
+                    // Prepara los puntos de datos para Chart.js para Corriente.
+                    const chartDataPointsCurrent = data.map(row => ({
+                        x: moment(row.Fecha), // Parsea la fecha de Supabase con Moment.js.
+                        y: row["Corriente (A)"] // Obtiene el valor de corriente.
+                    }));
 
-                    console.log("Puntos de datos para Chart.js (parseados y válidos):", validChartDataPoints);
+                    // Filtra los puntos de datos para asegurar que 'y' (voltaje/corriente) no sea nulo o indefinido.
+                    const validChartDataPointsVoltage = chartDataPointsVoltage.filter(point => point.y !== null && point.y !== undefined);
+                    const validChartDataPointsCurrent = chartDataPointsCurrent.filter(point => point.y !== null && point.y !== undefined);
+
+                    console.log("Puntos de datos de Voltaje (parseados y válidos):", validChartDataPointsVoltage);
+                    console.log("Puntos de datos de Corriente (parseados y válidos):", validChartDataPointsCurrent);
+
+                    // Define los datasets para la gráfica.
+                    const datasets = [
+                        {
+                            label: 'Voltaje (V)', // Etiqueta del dataset de Voltaje.
+                            data: validChartDataPointsVoltage, // Datos de voltaje.
+                            borderColor: 'rgb(255, 99, 132)', // Color de la línea (rojo).
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo (si fill es true).
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 6,
+                            pointBackgroundColor: 'rgb(255, 99, 132)',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 8,
+                        },
+                        {
+                            label: 'Corriente (A)', // Etiqueta del dataset de Corriente.
+                            data: validChartDataPointsCurrent, // Datos de corriente.
+                            borderColor: 'rgb(75, 192, 192)', // Color de la línea (azul/verde).
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo.
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 6,
+                            pointBackgroundColor: 'rgb(75, 192, 192)',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 8,
+                        }
+                    ];
 
                     if (chartInstance) {
-                        // Si la gráfica ya existe, simplemente actualiza sus datos y la refresca.
-                        chartInstance.data.datasets[0].data = validChartDataPoints;
+                        // Si la gráfica ya existe, actualiza sus datasets y la refresca.
+                        chartInstance.data.datasets = datasets;
                         chartInstance.update();
                     } else {
                         // Si la gráfica no existe, crea una nueva instancia de Chart.js.
                         const ctx = document.getElementById('miGrafica').getContext('2d');
                         chartInstance = new Chart(ctx, {
-                            type: 'line', // Tipo de gráfica de línea para el efecto "pico".
+                            type: 'line', // Tipo de gráfica de línea.
                             data: {
-                                datasets: [{
-                                    label: 'Voltaje (V)', // Etiqueta del dataset.
-                                    data: validChartDataPoints, // Los datos válidos para la gráfica.
-                                    borderColor: 'rgb(255, 99, 132)', // Color de la línea.
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo (si fill es true).
-                                    borderWidth: 2,      // Ancho de la línea.
-                                    tension: 0.4,        // Suavidad de la línea.
-                                    fill: false,         // No rellena el área bajo la línea.
-                                    pointRadius: 6,      // Tamaño de los marcadores de los puntos.
-                                    pointBackgroundColor: 'rgb(255, 99, 132)', // Color de fondo de los marcadores.
-                                    pointBorderColor: '#fff', // Color del borde de los marcadores.
-                                    pointHoverRadius: 8, // Tamaño del marcador al pasar el ratón.
-                                }]
+                                datasets: datasets, // Asigna ambos datasets.
                             },
                             options: {
-                                responsive: true, // La gráfica se adapta al tamaño de su contenedor.
-                                maintainAspectRatio: false, // No mantiene la relación de aspecto predeterminada.
+                                responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
-                                    x: { // Configuración del eje X como escala de tiempo.
+                                    x: {
                                         type: 'time',
                                         time: {
-                                            unit: 'hour', // La unidad principal para mostrar en el eje es la hora.
-                                            tooltipFormat: 'DD/MM/YYYY HH:mm', // Formato de fecha/hora en el tooltip.
+                                            unit: 'day',
+                                            tooltipFormat: 'DD/MM/YYYY',
                                             displayFormats: {
-                                                hour: 'HH:mm', // Formato para las etiquetas de hora en el eje.
-                                                day: 'DD/MM/YYYY' // Formato para las etiquetas de día (si la unidad cambia).
+                                                day: 'DD/MM/YYYY'
                                             }
                                         },
                                         title: {
                                             display: true,
-                                            text: 'Fecha y Hora' // Título del eje X.
+                                            text: 'Fecha'
                                         },
                                         ticks: {
-                                            autoSkip: true, // Omite etiquetas automáticamente si hay muchas.
-                                            maxRotation: 0, // No rota las etiquetas.
+                                            autoSkip: true,
+                                            maxRotation: 0,
                                             minRotation: 0
                                         }
                                     },
-                                    y: { // Configuración del eje Y.
-                                        beginAtZero: true, // El eje Y comienza en cero.
+                                    y: {
+                                        beginAtZero: true,
                                         title: {
                                             display: true,
-                                            text: 'Voltaje (V)' // Título del eje Y.
+                                            text: 'Valores' // Título genérico para el eje Y, ya que hay dos tipos de datos.
                                         }
                                     }
                                 },
                                 animation: {
-                                    duration: 0 // Deshabilita las animaciones para actualizaciones instantáneas.
+                                    duration: 0
                                 },
                                 plugins: {
                                     legend: {
-                                        display: true // Muestra la leyenda de la gráfica.
+                                        display: true
                                     }
                                 }
                             }
@@ -222,7 +246,6 @@
             updateChart();
 
             // 2. Suscríbete a los cambios en tiempo real de la tabla 'Baterias' en Supabase.
-            // Si se inserta un nuevo dato para la fecha actualmente seleccionada, la gráfica se actualizará.
             supabaseClient
                 .channel('schema-db-changes')
                 .on(
@@ -230,11 +253,10 @@
                     { event: 'INSERT', schema: 'public', table: 'Baterias' },
                     (payload) => {
                         console.log('Cambio en la base de datos detectado por Realtime:', payload);
-                        // Llama a updateChart, que filtrará y actualizará la gráfica si el nuevo dato es para el día actual.
                         updateChart(); 
                     }
                 )
-                .subscribe(); // Activa la suscripción al canal de Realtime.
+                .subscribe();
         });
     </script>
 </body>
